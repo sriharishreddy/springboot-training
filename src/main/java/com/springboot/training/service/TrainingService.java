@@ -1,6 +1,7 @@
 package com.springboot.training.service;
 
 import com.springboot.training.domain.User;
+import com.springboot.training.exception.InvalidUserException;
 import com.springboot.training.repository.TrainingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,4 +50,11 @@ public class TrainingService {
         }
     }
 
+    public String createUser(User user){
+        return repository.createUser(user);
+    }
+
+    public User getUserById(int userId) throws InvalidUserException {
+        return repository.getUserById(userId);
+    }
 }
