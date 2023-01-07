@@ -1,13 +1,16 @@
 package com.springboot.training.repository;
 
 import com.springboot.training.domain.User;
+import com.springboot.training.exception.InvalidUpdateDataException;
 import com.springboot.training.exception.InvalidUserException;
+import com.sun.media.sound.InvalidDataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -84,5 +87,39 @@ public class TrainingRepository {
 
         return users.get(0);
 
+    }
+
+    public String updateUser(User user) throws InvalidUpdateDataException {
+        String updateQuery = null;
+
+        if(StringUtils.hasText(user.getEmail()) && (!StringUtils.hasText(user.getName()) && !StringUtils.hasText(user.getPassword()))) {
+            updateQuery = "UPDATE `harish`.`user` SET `email` = '" + user.getEmail() + "' WHERE (`id` = '" + user.getId() + "');";
+            System.out.println("Executing Query : " + updateQuery);
+        }
+        else if(StringUtils.hasText(user.getName()) && (!StringUtils.hasText(user.getEmail()) && !StringUtils.hasText(user.getPassword()))) {
+            updateQuery = "UPDATE `harish`.`user` SET `name` = '" + user.getName() + "' WHERE (`id` = '" + user.getId() + "');";
+            System.out.println("Executing Query : " + updateQuery);
+        }
+        else if(StringUtils.hasText(user.getPassword()) && (!StringUtils.hasText(user.getName()) && !StringUtils.hasText(user.getEmail()))) {
+            updateQuery = "UPDATE `harish`.`user` SET `password` = '" + user.getPassword() + "' WHERE (`id` = '" + user.getId() + "');";
+            System.out.println("Executing Query : " + updateQuery);
+        }
+        else if(StringUtils.hasText(user.getEmail()) && StringUtils.hasText(user.getName()) && StringUtils.hasText(user.getPassword())) {
+            updateQuery = "UPDATE `harish`.`user` SET `name` = '"+user.getName()+"', `password` = '"+user.getPassword()+"', `email` = '"+user.getEmail()+"' WHERE (`id` = '"+ user.getId() +"');";
+            System.out.println("Executing Query : " + updateQuery);
+        } else {
+            System.out.println("Throwing an Exception..!");
+            throw new InvalidUpdateDataException();
+        }
+
+        int response = jdbcTemplate.update(updateQuery);
+        return  "Updated Records : "+response;
+    }
+
+    public String deleteUserByID(int userId) {
+        String deleteQuery = "DELETE FROM `harish`.`user` WHERE (`id` = '"+userId+"');";
+        System.out.println("Delete Query : " + deleteQuery);
+        jdbcTemplate.execute(deleteQuery);
+        return "Deleted Record Successfully. User Id : " + userId;
     }
 }

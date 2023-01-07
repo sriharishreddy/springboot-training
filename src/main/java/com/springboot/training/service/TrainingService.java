@@ -1,6 +1,7 @@
 package com.springboot.training.service;
 
 import com.springboot.training.domain.User;
+import com.springboot.training.exception.InvalidUpdateDataException;
 import com.springboot.training.exception.InvalidUserException;
 import com.springboot.training.repository.TrainingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,15 @@ public class TrainingService {
 
     public User getUserById(int userId) throws InvalidUserException {
         return repository.getUserById(userId);
+    }
+
+    public String updateUser(User user) throws InvalidUpdateDataException {
+        System.out.println("In Service class updateUser method");
+        return repository.updateUser(user);
+    }
+
+    public String deleteUserById(int userId){
+        System.out.println("Invoking Delete Method In Service Class");
+        return repository.deleteUserByID(userId);
     }
 }

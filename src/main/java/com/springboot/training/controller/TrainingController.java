@@ -1,6 +1,7 @@
 package com.springboot.training.controller;
 
 import com.springboot.training.domain.User;
+import com.springboot.training.exception.InvalidUpdateDataException;
 import com.springboot.training.exception.InvalidUserException;
 import com.springboot.training.service.TrainingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,23 @@ public class TrainingController {
         return service.getUserById(userIdValue);
     }
 
+    @PutMapping("updateUser/{userId}")
+    public String updateUser(@PathVariable("userId") String userId,@RequestBody User updateUser) throws InvalidUpdateDataException {
+        updateUser.setId(Integer.parseInt(userId));
+        System.out.println(updateUser.getId());
+        System.out.println(updateUser.getName());
+        System.out.println(updateUser.getPassword());
+        System.out.println(updateUser.getEmail());
+
+        return service.updateUser(updateUser);
+    }
+
+    @DeleteMapping("deleteUser/{userId}")
+    public String deleteUser(@PathVariable("userId") String userId){
+        int intUserId = Integer.parseInt(userId);
+        System.out.println("Requested User Id for Deletion. User Id : " + userId);
+        return service.deleteUserById(intUserId);
+    }
 //CRUD
 
 }
